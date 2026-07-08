@@ -13,7 +13,7 @@ const currentStep = ref(STEPS[0]);
 const route = useRoute();
 
 async function handleFormComplete(answers) {
-  const isSolvent = checkSolvency(answers.activity);
+  const isSolvent = checkSolvency(answers);
 
   const payload = {
     manychat_id: route.query.manychat_id || null,
