@@ -78,13 +78,13 @@ const spinDrum = () => {
       </div>
 
       <div
-        :class="showWinnerEffects ? 'text-emerald-400 scale-130' : 'text-zinc-700 animate-pulse'"
+        :class="showWinnerEffects ? 'text-emerald-400 scale-130' : 'text-emerald-500 animate-pulse'"
         class="absolute -left-2 top-1/2 -translate-y-1/2 text-2xl transition-all duration-300 z-20 font-black"
       >
         ▶
       </div>
       <div
-        :class="showWinnerEffects ? 'text-emerald-400 scale-130' : 'text-zinc-700 animate-pulse'"
+        :class="showWinnerEffects ? 'text-emerald-400 scale-130' : 'text-emerald-500 animate-pulse'"
         class="absolute -right-2 top-1/2 -translate-y-1/2 text-2xl transition-all duration-300 z-20 font-black"
       >
         ◀
@@ -93,21 +93,21 @@ const spinDrum = () => {
       <div
         :class="
           showWinnerEffects
-            ? 'bg-emerald-500/5 border-emerald-500/20'
-            : 'bg-zinc-950 border-zinc-950'
+            ? 'bg-emerald-950/20 border-emerald-500/30 shadow-[inset_0_0_20px_rgba(16,185,129,0.1)]'
+            : 'bg-zinc-950 border-zinc-800'
         "
         class="rounded-2xl relative transition-all duration-500 border h-[200px] flex items-center justify-center viewport-3d"
       >
         <div
-          class="absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-zinc-950 via-zinc-950/90 to-transparent pointer-events-none z-20 rounded-t-2xl"
+          class="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-zinc-950 via-zinc-950/60 to-transparent pointer-events-none z-20 rounded-t-2xl"
         ></div>
         <div
-          class="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-zinc-950 via-zinc-950/90 to-transparent pointer-events-none z-20 rounded-b-2xl"
+          class="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent pointer-events-none z-20 rounded-b-2xl"
         ></div>
 
         <div
-          class="absolute inset-x-2 h-16 top-1/2 -translate-y-1/2 border border-zinc-800/60 bg-zinc-900/10 pointer-events-none rounded-xl z-10"
-          :class="{ 'border-emerald-500/30 bg-emerald-500/5': showWinnerEffects }"
+          class="absolute inset-x-2 h-16 top-1/2 -translate-y-1/2 border border-zinc-700/40 bg-zinc-900/60 pointer-events-none rounded-xl z-10 transition-all duration-300 shadow-inner"
+          :class="{ 'border-emerald-500/40 bg-emerald-950/40': showWinnerEffects }"
         ></div>
 
         <div
@@ -124,10 +124,12 @@ const spinDrum = () => {
             :key="prize.id"
             :class="
               showWinnerEffects && prize.id === 'consult'
-                ? 'text-emerald-400 font-black text-sm sm:text-base opacity-100'
-                : 'text-zinc-500 font-bold text-xs opacity-25'
+                ? 'text-emerald-400 font-black text-base sm:text-lg opacity-100 drop-shadow-[0_0_15px_rgba(16,185,129,0.6)]'
+                : isSpinning
+                  ? 'text-zinc-100 font-extrabold text-sm opacity-75'
+                  : 'text-zinc-300 font-bold text-sm opacity-60'
             "
-            class="item-3d text-center"
+            class="item-3d text-center tracking-wide"
             :style="{ transform: `rotateX(${index * 45}deg) translateZ(102px)` }"
           >
             {{ prize.text }}
