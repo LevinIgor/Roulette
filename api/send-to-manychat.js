@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   }
 
   // Vercel автоматически парсит JSON и кладет его в req.body
-  const { manychat_id, is_solvent } = req.body;
+  const { user_id, is_solvent } = req.body;
 
   // На сервере Vercel секреты берутся исключительно из process.env
   const MANYCHAT_TOKEN = process.env.MANYCHAT_TOKEN;
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
         Authorization: `Bearer ${MANYCHAT_TOKEN}`,
       },
       body: JSON.stringify({
-        subscriber_id: manychat_id,
+        subscriber_id: user_id,
         flow_uuid: targetFlowUuid,
       }),
     });

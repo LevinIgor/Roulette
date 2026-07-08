@@ -16,7 +16,7 @@ async function handleFormComplete(answers) {
   const isSolvent = checkSolvency(answers);
 
   const payload = {
-    manychat_id: route.query.manychat_id || null,
+    user_id: route.query.user_id || null,
     is_solvent: isSolvent,
   };
 
