@@ -2,7 +2,7 @@
 
 const TG_API_BASE = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;
 
-// --- 1. ГОЛОВНИЙ ХЕНДЛЕР КЛІКІВ (Для роботи кнопок) ---
+// --- 1. ГОЛОВНИЙ ХЕНДЛЕР КЛІКІВ (Для роботи кнопок у вебхуку) ---
 export async function processTelegramCallback(
   chatId,
   messageId,
@@ -49,20 +49,21 @@ async function deleteMessageFromTelegram(chatId, messageId, callbackQueryId) {
   await answerCallbackQueryHelper(callbackQueryId, "Заявку видалено");
 }
 
-// --- 3. ТВІЙ ОНОВЛЕНИЙ КОД ВІДПРАВКИ (З інтеграцією нікнейма) ---
+// --- 3. ТВІЙ КОД ВІДПРАВКИ (Повністю робочий під інстаграм-ніки) ---
 export async function sendTelegramNotification(userId, isSolvent, answers, username) {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
 
+  // 🔥 ФИКС: Прибрали обов'язкову перевірку MANYCHAT_ACCOUNT_ID, бо лінк тепер на інсту
   if (!token || !chatId) {
-    console.error("Telegram credentials missing");
+    console.error("Telegram credentials missing (TOKEN or CHAT_ID)");
     return null;
   }
 
   let message = `🚀 *Нова заповнена анкета!*\n\n`;
   message += `👤 *Instagram ID:* \`${userId}\`\n`;
   if (username) {
-    message += `🏷️ *Нікнейм:* @${username}\n`; // Додали нікнейм у текст для зручності
+    message += `🏷️ *Нікнейм:* @${username}\n`;
   }
   message += `💰 *Тип ліда:* ${isSolvent ? "🟢 Цільовий" : "🟡 Нецільовий"}\n\n`;
   message += `📋 *Відповіді:* \n`;
@@ -78,7 +79,7 @@ export async function sendTelegramNotification(userId, isSolvent, answers, usern
       [
         {
           text: "📸 Відкрити Instagram клієнта",
-          url: username ? `https://instagram.com/${username}` : `https://instagram.com/`, // Захист на випадок, якщо нікнейм не прийшов
+          url: username ? `https://instagram.com/${username}` : `https://instagram.com/`,
         },
       ],
       [
