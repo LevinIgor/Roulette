@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import vRouletteStep from "@/components/steps/vRouletteStep.vue";
 import vPrizeStep from "@/components/steps/vPrizeStep.vue";
-import vFormStep from "@/components/steps/vFormStep.vue";
+import vFormStep from "@/components/steps/vFormStep2.vue";
 import vEndStep from "@/components/steps/vEndStep.vue";
 import { useRoute } from "vue-router";
 
