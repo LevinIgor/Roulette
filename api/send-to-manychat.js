@@ -28,7 +28,7 @@ export default async function handler(req, res) {
   const targetFlowUuid = is_solvent ? FLOW_FOR_SOLVENT : FLOW_FOR_NON_SOLVENT;
 
   try {
-    const mcResponse = await fetch("https://api.manychat.com/fb/subscriber/startFlow", {
+    const mcResponse = await fetch("https://api.manychat.com/v1/fb/subscriber/startFlow", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
