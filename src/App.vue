@@ -23,7 +23,7 @@ async function handleFormComplete(answers) {
   currentStep.value = "end";
 
   try {
-    const response = await fetch("/api/send-to-manychat", {
+    const response = await fetch("/api/submit-quiz", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
