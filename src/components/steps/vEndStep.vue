@@ -1,7 +1,5 @@
 <!-- src/components/SuccessScreen.vue -->
 <script setup>
-defineEmits(["on-restart"]);
-
 // Замени 'твой_ник_инсты' на реальный юзернейм твоего аккаунта.
 // Эта ссылка заставит приложение Instagram на телефоне сразу открыть Директ с тобой.
 const instaDirectUrl = "https://ig.me/m/твой_ник_инсты";
@@ -91,14 +89,6 @@ const instaDirectUrl = "https://ig.me/m/твой_ник_инсты";
       <span>Відкрити мій Директ</span>
       <span class="text-lg">💬</span>
     </a>
-
-    <!-- Кнопка сброса для тестов -->
-    <button
-      @click="$emit('on-restart')"
-      class="block mx-auto mt-6 text-[10px] text-zinc-600 hover:text-zinc-400 underline transition-colors uppercase tracking-wider"
-    >
-      Пройти тест заново (демо)
-    </button>
   </div>
 </template>
 

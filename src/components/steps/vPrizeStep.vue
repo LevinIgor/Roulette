@@ -13,10 +13,7 @@ defineEmits(["on-complete"]);
       🥳 Вау, вітаю!
     </div>
 
-    <h2 class="text-xl font-black text-zinc-100 mb-5 leading-snug px-1">
-      Ви виграли <span class="text-emerald-400">ПЕРСОНАЛЬНИЙ РОЗБІР</span> вашого запиту з побудовою
-      чіткого плану дій!
-    </h2>
+    <h2 class="text-xl font-black text-zinc-100 mb-5 leading-snug px-1">Ви виграли</h2>
 
     <div class="relative bg-zinc-950 border border-zinc-800/80 rounded-xl p-5 mb-6 overflow-hidden">
       <div
@@ -26,11 +23,9 @@ defineEmits(["on-complete"]);
         class="absolute right-[-8px] top-1/2 -translate-y-1/2 w-4 h-4 bg-zinc-900 rounded-full border-l border-zinc-800"
       ></div>
 
-      <p class="text-[11px] text-zinc-500 uppercase tracking-widest mb-1">
-        Ваш призовий сертифікат
-      </p>
       <h3 class="text-base font-extrabold text-zinc-200 uppercase tracking-wide">
-        Персональна сесія & Стратегія
+        <span class="text-emerald-400">ПЕРСОНАЛЬНИЙ РОЗБІР</span> вашого запиту з побудовою чіткого
+        плану дій!
       </h3>
 
       <div class="mt-3 flex items-center justify-center gap-3 text-sm">
@@ -76,7 +71,7 @@ defineEmits(["on-complete"]);
       </div>
     </div>
 
-    <p class="text-xs text-zinc-400 mb-5 leading-relaxed px-1">
+    <p class="text-xs text-zinc-100 mb-5 leading-relaxed px-1">
       Щоб впевнитись, що я можу бути вам корисна у вирішенні вашого запиту, я прошу вас заповнити
       коротеньку анкету.
     </p>
