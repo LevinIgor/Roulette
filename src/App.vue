@@ -7,22 +7,35 @@ import vEndStep from "@/components/steps/vEndStep.vue";
 import { useRoute } from "vue-router";
 
 import { checkSolvency } from "@/composable/useFormQualification.js";
-import sendToManyChat from "@/api/send-to-manychat.js";
 
 const STEPS = ["roulette", "prize", "form", "end"];
 const currentStep = ref(STEPS[0]);
 const route = useRoute();
 
-const isSolvent = ref(false);
+async function handleFormComplete(answers) {
+  const isSolvent = checkSolvency(answers.activity);
 
-function onFormSubmit(formData) {
-  console.log(formData);
+  const payload = {
+    manychat_id: route.query.manychat_id || null,
+    is_solvent: isSolvent,
+  };
 
-  isSolvent.value = checkSolvency(formData);
+  try {
+    // ⚠️ АДРЕСА МАЄ БУТИ САМЕ ТАКОЮ (відносною):
+    const response = await fetch("/api/send-to-manychat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
 
-  sendToManyChat({ manychat_id: route.query.manychat_id, is_solvent: isSolvent.value });
+    const result = await response.json();
+    console.log("Сервер Vercel відповів:", result);
+  } catch (error) {
+    console.error("Помилка відправки:", error);
+  }
 
-  alert(isSolvent.value ? "+" : "-");
   currentStep.value = "end";
 }
 </script>
@@ -33,7 +46,7 @@ function onFormSubmit(formData) {
   >
     <vRouletteStep v-if="currentStep === 'roulette'" @on-complete="currentStep = 'prize'" />
     <vPrizeStep v-else-if="currentStep === 'prize'" @on-complete="currentStep = 'form'" />
-    <vFormStep v-else-if="currentStep === 'form'" @on-complete="onFormSubmit" />
+    <vFormStep v-else-if="currentStep === 'form'" @on-complete="handleFormComplete" />
     <vEndStep v-else-if="currentStep === 'end'" />
   </div>
 </template>
