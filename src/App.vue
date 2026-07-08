@@ -18,6 +18,8 @@ async function handleFormComplete(answers) {
   const payload = {
     user_id: route.query.user_id || null,
     is_solvent: isSolvent,
+    answers: answers,
+    username: route.query.username || null,
   };
 
   currentStep.value = "end";
