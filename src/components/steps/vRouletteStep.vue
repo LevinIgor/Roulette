@@ -68,7 +68,7 @@ const spinDrum = async () => {
           ? 'border-emerald-400 shadow-[0_0_50px_rgba(16,185,129,0.4)] scale-[1.02]'
           : 'border-emerald-500 shadow-emerald-950/30'
       "
-      class="relative w-full max-w-[340px] bg-zinc-900 border-2 p-2.5 rounded-2xl shadow-2xl transition-all duration-500 ease-out z-10"
+      class="relative w-full max-w-85 bg-zinc-900 border-2 p-2.5 rounded-2xl shadow-2xl transition-all duration-500 ease-out z-10"
     >
       <!-- ДЕКОРАТИВНІ СВЯТКОВІ ЕЛЕМЕНТИ (ВИЛІТАЮТЬ ПРИ ВИГРАШІ) -->
       <div v-if="showWinnerEffects" class="absolute inset-0 pointer-events-none z-20">
@@ -81,13 +81,13 @@ const spinDrum = async () => {
       <!-- Бічні маркери-стрілочки (блимають червоним/зеленим під час виграшу) -->
       <div
         :class="showWinnerEffects ? 'text-emerald-400 scale-125' : 'text-emerald-500 animate-pulse'"
-        class="absolute left-[-20px] top-1/2 -translate-y-1/2 text-xl transition-all duration-300"
+        class="absolute -left-5 top-1/2 -translate-y-1/2 text-xl transition-all duration-300"
       >
         ▶
       </div>
       <div
         :class="showWinnerEffects ? 'text-emerald-400 scale-125' : 'text-emerald-500 animate-pulse'"
-        class="absolute right-[-20px] top-1/2 -translate-y-1/2 text-xl transition-all duration-300"
+        class="absolute -right-5 top-1/2 -translate-y-1/2 text-xl transition-all duration-300"
       >
         ◀
       </div>
@@ -132,7 +132,7 @@ const spinDrum = async () => {
     <button
       @click="spinDrum"
       :disabled="isSpinning || showWinnerEffects"
-      class="mt-8 w-full max-w-[340px] py-4 text-lg font-extrabold rounded-xl transition-all duration-200 active:scale-[0.98] disabled:bg-zinc-800 disabled:text-zinc-600 disabled:cursor-not-allowed bg-emerald-500 text-zinc-950 hover:bg-emerald-400 shadow-lg shadow-emerald-500/20"
+      class="mt-8 w-full max-w-85 py-4 text-lg font-extrabold rounded-xl transition-all duration-200 active:scale-[0.98] disabled:bg-zinc-800 disabled:text-zinc-600 disabled:cursor-not-allowed bg-emerald-500 text-zinc-950 hover:bg-emerald-400 shadow-lg shadow-emerald-500/20"
     >
       <span v-if="isSpinning">Барабан крутиться...</span>
       <span v-else-if="showWinnerEffects">ВІТАЄМО З ВИГРАШЕМ! 🥳</span>

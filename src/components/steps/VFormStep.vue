@@ -94,7 +94,7 @@ const toggleMultiSelect = (field, option) => {
 
 <template>
   <div
-    class="w-full max-w-md bg-zinc-900 border border-zinc-800 p-6 rounded-2xl shadow-2xl relative select-none min-h-[520px] flex flex-col justify-between"
+    class="w-full max-w-md bg-zinc-900 border border-zinc-800 p-6 rounded-2xl shadow-2xl relative select-none min-h-130 flex flex-col justify-between"
   >
     <div>
       <div class="flex items-center justify-between mb-4">
