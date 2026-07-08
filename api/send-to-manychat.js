@@ -3,10 +3,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { manychat_id, is_solvent } = req.body;
+  // 1. Читаем из тела запроса именно user_id (как присылает фронтенд)
+  const { user_id, is_solvent } = req.body;
 
-  // Проверяем, передал ли фронтенд ID пользователя
-  if (!manychat_id) {
+  // 2. Проверяем переменную user_id
+  if (!user_id) {
     return res.status(400).json({
       error: "Bad Request",
       message: "Сайт не передал user_id. Убедись, что в ссылке есть ?user_id=...",
@@ -17,7 +18,6 @@ export default async function handler(req, res) {
   const FLOW_FOR_SOLVENT = process.env.FLOW_FOR_SOLVENT;
   const FLOW_FOR_NON_SOLVENT = process.env.FLOW_FOR_NON_SOLVENT;
 
-  // Проверяем, загрузились ли секреты на Vercel
   if (!MANYCHAT_TOKEN) {
     return res.status(500).json({
       error: "Internal Server Error",
@@ -35,21 +35,19 @@ export default async function handler(req, res) {
         Authorization: `Bearer ${MANYCHAT_TOKEN}`,
       },
       body: JSON.stringify({
-        subscriber_id: manychat_id,
+        subscriber_id: user_id, // 3. Передаем user_id в ManyChat как subscriber_id
         flow_uuid: targetFlowUuid,
       }),
     });
 
-    // 🔥 КРИТИЧЕСКИЙ ФИКС: Проверяем, что вернул ManyChat перед тем как превращать в JSON
     const contentType = mcResponse.headers.get("content-type");
 
     if (!contentType || !contentType.includes("application/json")) {
-      // Если пришел HTML, забираем его как обычный текст
       const rawHtmlError = await mcResponse.text();
       return res.status(mcResponse.status).json({
         error: "ManyChat заблокировал запрос или выдал ошибку",
         status: mcResponse.status,
-        raw_error: rawHtmlError.substring(0, 300), // Покажет первые 300 символов ошибки (там будет понятен текст)
+        raw_error: rawHtmlError.substring(0, 300),
       });
     }
 
