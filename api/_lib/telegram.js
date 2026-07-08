@@ -1,5 +1,4 @@
 export async function sendTelegramNotification(userId, isSolvent, answers) {
-  return;
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
 
