@@ -20,8 +20,9 @@ async function handleFormComplete(answers) {
     is_solvent: isSolvent,
   };
 
+  currentStep.value = "end";
+
   try {
-    // ⚠️ АДРЕСА МАЄ БУТИ САМЕ ТАКОЮ (відносною):
     const response = await fetch("/api/send-to-manychat", {
       method: "POST",
       headers: {
@@ -35,18 +36,60 @@ async function handleFormComplete(answers) {
   } catch (error) {
     console.error("Помилка відправки:", error);
   }
-
-  currentStep.value = "end";
 }
 </script>
 
 <template>
   <div
-    class="min-h-screen bg-zinc-950 text-zinc-50 flex flex-col justify-center items-center px-4 py-6 font-sans select-none"
+    class="flex flex-col items-center p-5 text-center select-none relative w-full min-h-screen justify-center bg-zinc-950 overflow-hidden"
   >
-    <vRouletteStep v-if="currentStep === 'roulette'" @on-complete="currentStep = 'prize'" />
-    <vPrizeStep v-else-if="currentStep === 'prize'" @on-complete="currentStep = 'form'" />
-    <vFormStep v-else-if="currentStep === 'form'" @on-complete="handleFormComplete" />
-    <vEndStep v-else-if="currentStep === 'end'" />
+    <div class="absolute inset-0 pointer-events-none overflow-hidden z-0 bg-zinc-950">
+      <div
+        class="absolute -top-32 -left-20 w-96 h-96 bg-emerald-500/25 rounded-full blur-[90px] animate-blob transform-gpu"
+      ></div>
+
+      <div
+        class="absolute top-1/4 -right-32 w-96 h-96 bg-zinc-700/40 rounded-full blur-[110px] animate-blob animation-delay-2000 transform-gpu"
+      ></div>
+
+      <div
+        class="absolute -bottom-32 -left-20 w-96 h-96 bg-emerald-600/20 rounded-full blur-[100px] animate-blob animation-delay-4000 transform-gpu"
+      ></div>
+    </div>
+
+    <div class="relative z-10 w-full flex flex-col items-center min-h-full">
+      <vRouletteStep v-if="currentStep === 'roulette'" @on-complete="currentStep = 'prize'" />
+      <vPrizeStep v-else-if="currentStep === 'prize'" @on-complete="currentStep = 'form'" />
+      <vFormStep v-else-if="currentStep === 'form'" @on-complete="handleFormComplete" />
+      <vEndStep v-else-if="currentStep === 'end'" />
+    </div>
   </div>
 </template>
+
+<style scoped>
+/* Додаємо вказівку для браузера, що ці елементи будуть постійно рухатися */
+.animate-blob {
+  will-change: transform;
+  animation: blob-animation 12s infinite alternate ease-in-out;
+}
+
+@keyframes blob-animation {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  50% {
+    /* Робимо рух більш помітним — зсув на 40-60 пікселів */
+    transform: translate(100px, 60px) scale(1.2);
+  }
+  100% {
+    transform: translate(-150px, -40px) scale(0.9);
+  }
+}
+
+.animation-delay-2000 {
+  animation-delay: 1s;
+}
+.animation-delay-4000 {
+  animation-delay: 1s;
+}
+</style>

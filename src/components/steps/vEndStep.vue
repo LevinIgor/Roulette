@@ -2,7 +2,7 @@
 <script setup>
 // Замени 'твой_ник_инсты' на реальный юзернейм твоего аккаунта.
 // Эта ссылка заставит приложение Instagram на телефоне сразу открыть Директ с тобой.
-const instaDirectUrl = "https://ig.me/m/твой_ник_инсты";
+const instaDirectUrl = "https://ig.me/m/n_nutriition";
 </script>
 
 <template>
