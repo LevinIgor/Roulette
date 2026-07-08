@@ -3,14 +3,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // 1. Читаем из тела запроса именно user_id (как присылает фронтенд)
   const { user_id, is_solvent } = req.body;
 
-  // 2. Проверяем переменную user_id
   if (!user_id) {
     return res.status(400).json({
       error: "Bad Request",
-      message: "Сайт не передал user_id. Убедись, что в ссылке есть ?user_id=...",
+      message: "Сайт не передал user_id.",
     });
   }
 
@@ -25,18 +23,20 @@ export default async function handler(req, res) {
     });
   }
 
-  const targetFlowUuid = is_solvent ? FLOW_FOR_SOLVENT : FLOW_FOR_NON_SOLVENT;
+  // Выбираем нужный FLOW_NS в зависимости от платежеспособности
+  const targetFlowNs = is_solvent ? FLOW_FOR_SOLVENT : FLOW_FOR_NON_SOLVENT;
 
   try {
-    const mcResponse = await fetch("https://api.manychat.com/v1/fb/subscriber/startFlow", {
+    // 🔥 Используем ОФИЦИАЛЬНО РАБОЧИЙ URL и заголовки из твоего примера
+    const mcResponse = await fetch("https://api.manychat.com/fb/sending/sendFlow", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${MANYCHAT_TOKEN}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        subscriber_id: user_id, // 3. Передаем user_id в ManyChat как subscriber_id
-        flow_uuid: targetFlowUuid,
+        subscriber_id: String(user_id), // Принудительно в строку, как в твоем примере
+        flow_ns: targetFlowNs, // Ключ изменен с flow_uuid на flow_ns
       }),
     });
 
@@ -45,7 +45,7 @@ export default async function handler(req, res) {
     if (!contentType || !contentType.includes("application/json")) {
       const rawHtmlError = await mcResponse.text();
       return res.status(mcResponse.status).json({
-        error: "ManyChat заблокировал запрос или выдал ошибку",
+        error: "ManyChat вернул ошибку (не JSON)",
         status: mcResponse.status,
         raw_error: rawHtmlError.substring(0, 300),
       });
