@@ -61,7 +61,6 @@ export async function sendTelegramNotification(userId, isSolvent, answers, usern
   }
 
   let message = `🚀 <b>Нова заповнена анкета!</b>\n\n`;
-  message += `👤 <b>Instagram ID:</b> <code>${userId}</code>\n`;
   if (username) {
     message += `🏷️ <b>Нікнейм:</b> <a href="https://instagram.com/${username}">@${username}</a>\n`;
   }
@@ -76,12 +75,6 @@ export async function sendTelegramNotification(userId, isSolvent, answers, usern
 
   const replyMarkup = {
     inline_keyboard: [
-      [
-        {
-          text: "📸 Відкрити Instagram клієнта",
-          url: username ? `https://instagram.com/${username}` : `https://instagram.com/`,
-        },
-      ],
       [
         { text: "✅ Підтвердили час", callback_data: `status_confirm:${userId}` },
         { text: "🟡 Нецільовий", callback_data: `status_nontarget:${userId}` },
