@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   }
 
   const MANYCHAT_TOKEN = process.env.MANYCHAT_TOKEN;
-  const TARGET_TAG = "has_been_roulette".trim().toLowerCase();
+  const TARGET_TAG = "Крутил рулетку".trim().toLowerCase();
 
   if (!MANYCHAT_TOKEN) {
     console.error("[Check User] ПОМИЛКА: ManyChat Token відсутній у змінних оточення Vercel!");
