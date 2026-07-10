@@ -46,7 +46,7 @@ onMounted(async () => {
       const response = await fetch(`/api/check-user?user_id=${userId}`);
       const result = await response.json();
 
-      currentStep.value = result.hasCompleted ? STEPS[3] : STEPS[0];
+      currentStep.value = result.already_played ? STEPS[3] : STEPS[0];
     } catch (error) {
       console.error("Ошибка проверки повторного прохождения:", error);
     }
