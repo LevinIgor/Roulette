@@ -38,6 +38,11 @@ async function handleFormComplete(answers) {
 }
 
 onMounted(async () => {
+  if (window.location.hostname === "localhost") {
+    currentStep.value = STEPS[0];
+    return;
+  }
+
   await new Promise((resolve) => setTimeout(resolve, 0));
   const userId = route.query.user_id || null;
 
@@ -62,30 +67,58 @@ onMounted(async () => {
       <div
         class="absolute -top-32 -left-20 w-96 h-96 bg-emerald-500/25 rounded-full blur-[90px] animate-blob transform-gpu"
       ></div>
-
       <div
         class="absolute top-1/4 -right-32 w-96 h-96 bg-zinc-700/40 rounded-full blur-[110px] animate-blob animation-delay-2000 transform-gpu"
       ></div>
-
       <div
         class="absolute -bottom-32 -left-20 w-96 h-96 bg-emerald-600/20 rounded-full blur-[100px] animate-blob animation-delay-4000 transform-gpu"
       ></div>
     </div>
 
-    <div class="relative z-10 w-full flex flex-col items-center min-h-full">
-      <vRouletteStep v-if="currentStep === 'roulette'" @on-complete="currentStep = STEPS[1]" />
-      <vPrizeStep v-else-if="currentStep === 'prize'" @on-complete="currentStep = STEPS[2]" />
-      <vFormStep v-else-if="currentStep === 'form'" @on-complete="handleFormComplete" />
-      <vEndStep v-else-if="currentStep === 'end'" />
+    <div class="relative z-10 w-full flex flex-col items-center justify-center min-h-screen">
+      <Transition v-if="currentStep = STEPS[0]" name="step-fade" mode="out-in">
+        <vRouletteStep
+          v-if="currentStep === 'roulette'"
+          key="roulette"
+          @on-complete="currentStep = STEPS[1]"
+        />
+        <vPrizeStep
+          v-else-if="currentStep === 'prize'"
+          key="prize"
+          @on-complete="currentStep = STEPS[2]"
+        />
+        <vFormStep
+          v-else-if="currentStep === 'form'"
+          key="form"
+          @on-complete="handleFormComplete"
+        />
+        <vEndStep v-else-if="currentStep === 'end'" key="end" />
+      </Transition>
     </div>
   </div>
 </template>
 
 <style scoped>
-/* Додаємо вказівку для браузера, що ці елементи будуть постійно рухатися */
+.step-fade-enter-active,
+.step-fade-leave-active {
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform, opacity;
+}
+
+.step-fade-leave-to {
+  opacity: 0;
+  filter: blur(2px);
+}
+
+.step-fade-enter-from {
+  opacity: 0;
+  filter: blur(2px);
+  transform: translateY(-4px);
+}
+
 .animate-blob {
   will-change: transform;
-  animation: blob-animation 12s infinite alternate ease-in-out;
+  animation: blob-animation 14s infinite alternate ease-in-out;
 }
 
 @keyframes blob-animation {
@@ -93,18 +126,17 @@ onMounted(async () => {
     transform: translate(0px, 0px) scale(1);
   }
   50% {
-    /* Робимо рух більш помітним — зсув на 40-60 пікселів */
-    transform: translate(100px, 60px) scale(1.2);
+    transform: translate(60px, 40px) scale(1.15);
   }
   100% {
-    transform: translate(-150px, -40px) scale(0.9);
+    transform: translate(-40px, -60px) scale(0.9);
   }
 }
 
 .animation-delay-2000 {
-  animation-delay: 1s;
+  animation-delay: 2s;
 }
 .animation-delay-4000 {
-  animation-delay: 1s;
+  animation-delay: 4s;
 }
 </style>
