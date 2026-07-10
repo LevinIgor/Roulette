@@ -41,20 +41,16 @@ async function handleFormComplete(answers) {
 }
 
 onMounted(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 100));
+  await new Promise((resolve) => setTimeout(resolve, 0));
   const userId = route.query.user_id || null;
-
-  console.log(userId);
 
   if (userId) {
     try {
-      // Стучимся в наш новый эндпоинт на Vercel
       const response = await fetch(`/api/check-user?user_id=${userId}`);
       const result = await response.json();
 
-      // Если ManyChat вернул, что тег есть — включаем экран блокировки
       if (result.already_played) {
-        currentStep.value = "already_played";
+        currentStep.value = "end";
       }
     } catch (error) {
       console.error("Ошибка проверки повторного прохождения:", error);
