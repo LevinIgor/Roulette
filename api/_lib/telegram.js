@@ -100,7 +100,7 @@ export async function sendTelegramNotification(userId, isSolvent, answers, usern
     body: JSON.stringify({
       chat_id: chatId,
       text: message,
-      parse_mode: "Markdown",
+      parse_mode: "html",
       reply_markup: replyMarkup,
     }),
   });
@@ -115,7 +115,7 @@ async function editMessageTextHelper(chatId, messageId, newText, newReplyMarkup)
       chat_id: chatId,
       message_id: messageId,
       text: newText,
-      parse_mode: "Markdown",
+      parse_mode: "html",
       reply_markup: newReplyMarkup,
     }),
   });
