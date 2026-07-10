@@ -31,6 +31,8 @@ export default async function handler(req, res) {
       },
     );
 
+    console.log(res);
+
     if (!mcResponse.ok) {
       return res.status(200).json({ already_played: false });
     }
