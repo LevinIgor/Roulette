@@ -6,8 +6,6 @@ export default async function handler(req, res) {
   }
 
   const { user_id } = req.query;
-
-  // 📝 Логуємо старт запиту
   console.log(`[Check User] Перевірка тегу для user_id: ${user_id}`);
 
   if (!user_id) {
@@ -15,7 +13,6 @@ export default async function handler(req, res) {
   }
 
   const MANYCHAT_TOKEN = process.env.MANYCHAT_TOKEN;
-  // Приводимо цільовий тег до нижнього регістру і прибираємо випадкові пробіли
   const TARGET_TAG = "has_been_roulette".trim().toLowerCase();
 
   if (!MANYCHAT_TOKEN) {
@@ -36,8 +33,6 @@ export default async function handler(req, res) {
     );
 
     const resData = await mcResponse.json();
-
-    // 🔥 ГОЛОВНИЙ ЛОГ: Подивимось у консолі Vercel, що САМЕ відповідає ManyChat
     console.log(`[Check User] Реальна відповідь від ManyChat API:`, JSON.stringify(resData));
 
     if (!mcResponse.ok) {
@@ -48,8 +43,11 @@ export default async function handler(req, res) {
     const userTags = resData.data?.tags || [];
     console.log(`[Check User] Теги користувача в ManyChat:`, userTags);
 
-    // 🛡️ Безпечна перевірка: ігноруємо великі/малі літери та випадкові пробіли на початку/в кінці
-    const alreadyPlayed = userTags.some((tag) => tag.trim().toLowerCase() === TARGET_TAG);
+    // 🛡️ ФІКС: Обов'язково обертаємо tag у String(), щоб уникнути падіння на числових тегах
+    const alreadyPlayed = userTags.some((tag) => {
+      if (tag === null || tag === undefined) return false;
+      return String(tag).trim().toLowerCase() === TARGET_TAG;
+    });
 
     console.log(`[Check User] Результат перевірки: ${alreadyPlayed}`);
 
