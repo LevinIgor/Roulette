@@ -9,11 +9,10 @@ export default async function handler(req, res) {
   console.log(`[Check User] Перевірка тегу для user_id: ${user_id}`);
 
   if (!user_id) {
-    return res.status(200).json({ already_played: false, debug: "no_user_id" });
+    return res.status(200).json({ already_played: false });
   }
 
   const MANYCHAT_TOKEN = process.env.MANYCHAT_TOKEN;
-  const TARGET_TAG = "Крутил рулетку".trim().toLowerCase();
 
   if (!MANYCHAT_TOKEN) {
     console.error("[Check User] ПОМИЛКА: ManyChat Token відсутній у змінних оточення Vercel!");
@@ -32,21 +31,22 @@ export default async function handler(req, res) {
       },
     );
 
-    const resData = await mcResponse.json();
-    console.log(`[Check User] Реальна відповідь від ManyChat API:`, JSON.stringify(resData));
-
     if (!mcResponse.ok) {
-      console.error(`[Check User] ManyChat API повернуло статус помилки: ${mcResponse.status}`);
-      return res.status(200).json({ already_played: false, debug: "mc_api_error" });
+      return res.status(200).json({ already_played: false });
     }
 
+    const resData = await mcResponse.json();
     const userTags = resData.data?.tags || [];
-    console.log(`[Check User] Теги користувача в ManyChat:`, userTags);
 
-    // 🛡️ ФІКС: Обов'язково обертаємо tag у String(), щоб уникнути падіння на числових тегах
+    // 🛡️ ОНОВЛЕНА ПЕРЕВІРКА ОБ'ЄКТІВ + ЗАХИСТ ВІД РІЗНИХ МОВ
     const alreadyPlayed = userTags.some((tag) => {
-      if (tag === null || tag === undefined) return false;
-      return String(tag).trim().toLowerCase() === TARGET_TAG;
+      if (!tag || !tag.name) return false;
+
+      // Дістаємо текст тегу, прибираємо пробіли та переводимо в нижній регістр
+      const tagName = String(tag.name).trim().toLowerCase();
+
+      // Перевіряємо обидва варіанти написання, щоб точно не промахнутися
+      return tagName === "крутил рулетку" || tagName === "крутив рулетку";
     });
 
     console.log(`[Check User] Результат перевірки: ${alreadyPlayed}`);
@@ -54,6 +54,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ already_played: alreadyPlayed });
   } catch (error) {
     console.error("[Check User] КРИТИЧНА ПОМИЛКА СКРИПТА:", error);
-    return res.status(200).json({ already_played: false, error: error.message });
+    return res.status(200).json({ already_played: false });
   }
 }
