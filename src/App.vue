@@ -41,7 +41,10 @@ async function handleFormComplete(answers) {
 }
 
 onMounted(async () => {
+  await new Promise((resolve) => setTimeout(resolve, 100));
   const userId = route.query.user_id || null;
+
+  console.log(userId);
 
   if (userId) {
     try {
