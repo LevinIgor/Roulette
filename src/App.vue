@@ -9,7 +9,7 @@ import { useRoute } from "vue-router";
 import { checkSolvency } from "@/composable/useFormQualification.js";
 
 const STEPS = ["roulette", "prize", "form", "end"];
-const currentStep = ref(STEPS[0]);
+const currentStep = ref("");
 const route = useRoute();
 
 async function handleFormComplete(answers) {
@@ -22,19 +22,16 @@ async function handleFormComplete(answers) {
     username: route.query.username || null,
   };
 
-  currentStep.value = "end";
+  currentStep.value = STEPS[3];
 
   try {
-    const response = await fetch("/api/submit-quiz", {
+    fetch("/api/submit-quiz", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
     });
-
-    const result = await response.json();
-    console.log("Сервер Vercel відповів:", result);
   } catch (error) {
     console.error("Помилка відправки:", error);
   }
@@ -49,9 +46,7 @@ onMounted(async () => {
       const response = await fetch(`/api/check-user?user_id=${userId}`);
       const result = await response.json();
 
-      if (result.already_played) {
-        currentStep.value = "end";
-      }
+      currentStep.value = result.hasCompleted ? STEPS[3] : STEPS[0];
     } catch (error) {
       console.error("Ошибка проверки повторного прохождения:", error);
     }
@@ -78,8 +73,8 @@ onMounted(async () => {
     </div>
 
     <div class="relative z-10 w-full flex flex-col items-center min-h-full">
-      <vRouletteStep v-if="currentStep === 'roulette'" @on-complete="currentStep = 'prize'" />
-      <vPrizeStep v-else-if="currentStep === 'prize'" @on-complete="currentStep = 'form'" />
+      <vRouletteStep v-if="currentStep === 'roulette'" @on-complete="currentStep = STEPS[1]" />
+      <vPrizeStep v-else-if="currentStep === 'prize'" @on-complete="currentStep = STEPS[2]" />
       <vFormStep v-else-if="currentStep === 'form'" @on-complete="handleFormComplete" />
       <vEndStep v-else-if="currentStep === 'end'" />
     </div>

@@ -60,19 +60,23 @@ export async function sendTelegramNotification(userId, isSolvent, answers, usern
     return null;
   }
 
-  let message = `🚀 *Нова заповнена анкета!*\n\n`;
-  message += `👤 *Instagram ID:* \`${userId}\`\n`;
+  let message = `🚀 <b>Нова заповнена анкета!</b>\n\n`;
+  message += `👤 <b>Instagram ID:</b> <code>${userId}</code>\n`;
   if (username) {
-    message += `🏷️ *Нікнейм:* @${username}\n`;
+    // В HTML ссылки со спецсимволами никогда не ломаются
+    message += `🏷️ <b>Нікнейм:</b> <a href="https://instagram.com/${username}">@${username}</a>\n`;
   }
-  message += `💰 *Тип ліда:* ${isSolvent ? "🟢 Цільовий" : "🟡 Нецільовий"}\n\n`;
-  message += `📋 *Відповіді:* \n`;
+  message += `💰 <b>Тип ліда:</b> ${isSolvent ? "🟢 Цільовий" : "🟡 Нецільовий"}\n\n`;
+  message += `📋 <b>Відповіді:</b> \n`;
 
   if (answers && typeof answers === "object") {
     Object.entries(answers).forEach(([question, answer]) => {
-      message += `🔹 *${question}:* ${answer}\n`;
+      message += `🔹 <b>${question}:</b> ${answer}\n`;
     });
   }
+
+  // При отправке fetch в самом низу функции заменить:
+  // parse_mode: "HTML"
 
   const replyMarkup = {
     inline_keyboard: [
