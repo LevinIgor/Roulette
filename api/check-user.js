@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -5,21 +7,23 @@ export default async function handler(req, res) {
 
   const { user_id } = req.query;
 
-  // Если ID нет, то проверять некого — пускаем на сайт (например, для тестов)
+  // 📝 Логуємо старт запиту
+  console.log(`[Check User] Перевірка тегу для user_id: ${user_id}`);
+
   if (!user_id) {
-    return res.status(200).json({ already_played: false });
+    return res.status(200).json({ already_played: false, debug: "no_user_id" });
   }
 
   const MANYCHAT_TOKEN = process.env.MANYCHAT_TOKEN;
-  const TARGET_TAG = "has_been_roulette"; // Название тега, который ты ставишь в ManyChat
+  // Приводимо цільовий тег до нижнього регістру і прибираємо випадкові пробіли
+  const TARGET_TAG = "has_been_roulette".trim().toLowerCase();
 
   if (!MANYCHAT_TOKEN) {
-    console.error("ManyChat Token missing in Vercel env");
+    console.error("[Check User] ПОМИЛКА: ManyChat Token відсутній у змінних оточення Vercel!");
     return res.status(500).json({ error: "Server configuration missing" });
   }
 
   try {
-    // Запрашиваем информацию о тегах лида из ManyChat
     const mcResponse = await fetch(
       `https://api.manychat.com/fb/subscriber/getInfo?subscriber_id=${user_id}`,
       {
@@ -31,20 +35,27 @@ export default async function handler(req, res) {
       },
     );
 
-    console.log(res);
+    const resData = await mcResponse.json();
+
+    // 🔥 ГОЛОВНИЙ ЛОГ: Подивимось у консолі Vercel, що САМЕ відповідає ManyChat
+    console.log(`[Check User] Реальна відповідь від ManyChat API:`, JSON.stringify(resData));
 
     if (!mcResponse.ok) {
-      return res.status(200).json({ already_played: false });
+      console.error(`[Check User] ManyChat API повернуло статус помилки: ${mcResponse.status}`);
+      return res.status(200).json({ already_played: false, debug: "mc_api_error" });
     }
 
-    const resData = await mcResponse.json();
     const userTags = resData.data?.tags || [];
+    console.log(`[Check User] Теги користувача в ManyChat:`, userTags);
 
-    // Возвращаем true, если тег найден, и false, если тега нет
-    const alreadyPlayed = userTags.includes(TARGET_TAG);
+    // 🛡️ Безпечна перевірка: ігноруємо великі/малі літери та випадкові пробіли на початку/в кінці
+    const alreadyPlayed = userTags.some((tag) => tag.trim().toLowerCase() === TARGET_TAG);
+
+    console.log(`[Check User] Результат перевірки: ${alreadyPlayed}`);
+
     return res.status(200).json({ already_played: alreadyPlayed });
   } catch (error) {
-    console.error("ManyChat check error:", error);
-    return res.status(200).json({ already_played: false });
+    console.error("[Check User] КРИТИЧНА ПОМИЛКА СКРИПТА:", error);
+    return res.status(200).json({ already_played: false, error: error.message });
   }
 }
