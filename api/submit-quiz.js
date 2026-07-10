@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   }
 
   // Обов'язково дістаємо user_name, який присилає фронтенд
-  const { user_id, user_name, is_solvent, answers } = req.body;
+  const { user_id, username, is_solvent, answers } = req.body;
 
   if (!user_id) {
     return res.status(400).json({ error: "Bad Request", message: "User ID missing" });
@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     // Запускаємо ManyChat та оновлений Telegram (передаємо user_name 4-м параметром)
     const [mcResult, tgResult] = await Promise.all([
       triggerManyChatFlow(user_id, is_solvent),
-      sendTelegramNotification(user_id, is_solvent, answers, user_name),
+      sendTelegramNotification(user_id, is_solvent, answers, username),
     ]);
 
     return res.status(200).json({

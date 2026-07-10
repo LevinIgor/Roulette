@@ -63,7 +63,6 @@ export async function sendTelegramNotification(userId, isSolvent, answers, usern
   let message = `🚀 <b>Нова заповнена анкета!</b>\n\n`;
   message += `👤 <b>Instagram ID:</b> <code>${userId}</code>\n`;
   if (username) {
-    // В HTML ссылки со спецсимволами никогда не ломаются
     message += `🏷️ <b>Нікнейм:</b> <a href="https://instagram.com/${username}">@${username}</a>\n`;
   }
   message += `💰 <b>Тип ліда:</b> ${isSolvent ? "🟢 Цільовий" : "🟡 Нецільовий"}\n\n`;
@@ -74,9 +73,6 @@ export async function sendTelegramNotification(userId, isSolvent, answers, usern
       message += `🔹 <b>${question}:</b> ${answer}\n`;
     });
   }
-
-  // При отправке fetch в самом низу функции заменить:
-  // parse_mode: "HTML"
 
   const replyMarkup = {
     inline_keyboard: [

@@ -22,6 +22,8 @@ async function handleFormComplete(answers) {
     username: route.query.username || null,
   };
 
+  console.log(payload);
+
   currentStep.value = STEPS[3];
 
   try {
