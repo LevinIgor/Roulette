@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import vRouletteStep from "@/components/steps/vRouletteStep.vue";
 import vPrizeStep from "@/components/steps/vPrizeStep.vue";
 import vFormStep from "@/components/steps/vFormStep2.vue";
@@ -39,6 +39,25 @@ async function handleFormComplete(answers) {
     console.error("Помилка відправки:", error);
   }
 }
+
+onMounted(async () => {
+  const userId = route.query.user_id || null;
+
+  if (userId) {
+    try {
+      // Стучимся в наш новый эндпоинт на Vercel
+      const response = await fetch(`/api/check-user?user_id=${userId}`);
+      const result = await response.json();
+
+      // Если ManyChat вернул, что тег есть — включаем экран блокировки
+      if (result.already_played) {
+        currentStep.value = "already_played";
+      }
+    } catch (error) {
+      console.error("Ошибка проверки повторного прохождения:", error);
+    }
+  }
+});
 </script>
 
 <template>

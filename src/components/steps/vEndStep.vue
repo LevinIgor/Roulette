@@ -24,13 +24,6 @@ const instaDirectUrl = "https://ig.me/m/n_nutriition";
       >
         Бонус зафіксовано!
       </h2>
-      <p class="text-xs sm:text-sm text-zinc-300 font-medium px-2 mb-4 sm:mb-6 leading-relaxed">
-        Ваш
-        <span class="text-zinc-50 font-extrabold underline decoration-emerald-500/50 decoration-2"
-          >Персональний розбір (2500 грн)</span
-        >
-        успішно закріплено за вашим профілем!
-      </p>
     </div>
 
     <div

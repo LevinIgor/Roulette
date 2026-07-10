@@ -5,14 +5,13 @@ const emits = defineEmits(["on-complete"]);
 
 const isSpinning = ref(false);
 const showWinnerEffects = ref(false);
-const rotationX = ref(0);
 
 const SPIN_DURATION = 4000;
 const SPIN_LOOPS = 6; // Скільки разів колесо прокрутиться на 360 градусів
 
 const basePrizes = [
   { id: "consult", text: "🎁 Персональний розбір запиту" },
-  { id: "menu", text: "📋% Меню на тиждень" },
+  { id: "menu", text: "📋 Меню на тиждень" },
   { id: "checkup", text: "🔬 Список аналізів для чек-апу" },
   { id: "kbzhu", text: "📊 Розрахунок ваших КБЖВ" },
   { id: "stress", text: "🧠 Урок про стрес" },
@@ -21,6 +20,13 @@ const basePrizes = [
   { id: "discount", text: "🔥 Знижка 20% на супровід" },
 ];
 
+const degreesPerItem = 360 / basePrizes.length; // 45 градусів на кожен елемент
+
+// 🎯 ВИБИРАЄМО СТАРТОВИЙ ЕЛЕМЕНТ (наприклад, індекс 3 — "Розрахунок ваших КБЖВ")
+const startingIndex = 3;
+// Ставимо мінус, щоб колесо правильно вирівнялося на старті
+const rotationX = ref(-(startingIndex * degreesPerItem));
+
 const cssDuration = computed(() => `${SPIN_DURATION / 1000}s`);
 
 const spinDrum = () => {
@@ -28,9 +34,8 @@ const spinDrum = () => {
   isSpinning.value = true;
   showWinnerEffects.value = false;
 
-  // Нам потрібно, щоб виграв "consult". Він стоїть першим (індекс 0).
+  // Нам все ще потрібно, щоб виграв "consult" (індекс 0)
   const mainPrizeIndex = basePrizes.findIndex((p) => p.id === "consult");
-  const degreesPerItem = 360 / basePrizes.length; // 45 градусів на кожен елемент
 
   // Кінцева точка: повні оберти + ідеальне вирівнювання на цільовий приз
   const targetDegrees = 360 * SPIN_LOOPS + mainPrizeIndex * degreesPerItem;
