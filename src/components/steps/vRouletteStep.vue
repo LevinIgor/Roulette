@@ -120,7 +120,7 @@ const spinDrum = () => {
           :style="{
             transform: `rotateX(${rotationX}deg)`,
             transition: isSpinning
-              ? `transform ${cssDuration} cubic-bezier(0.15, 0.85, 0.15, 1)`
+              ? `transform ${cssDuration} cubic-bezier(0.8, 0, 0.1, 1)`
               : 'none',
           }"
         >
