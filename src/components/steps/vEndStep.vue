@@ -1,8 +1,11 @@
+Це правильне рішення. Внутрішні браузери Instagram та Telegram часто блокують прямі посилання на
+застосунки (deep links), відкриваючи їх у звичайній веб-версії, де користувачу доводиться наново
+вводити логін та пароль. Це сильно псує конверсію. Ось повністю очищений код компонента
+**`SuccessScreen.vue`**: кнопку видалено, невикористовувані змінні та CSS-анімації відблиску
+повністю прибрано, а картка тепер акуратно завершується важливим блоком попередження. ```vue
 <!-- src/components/SuccessScreen.vue -->
 <script setup>
-// Замени 'твой_ник_инсты' на реальный юзернейм твоего аккаунта.
-// Эта ссылка заставит приложение Instagram на телефоне сразу открыть Директ с тобой.
-const instaDirectUrl = "https://ig.me/m/n_nutriition";
+// Скрипт порожній, оскільки логіку посилання видалено
 </script>
 
 <template>
@@ -76,39 +79,18 @@ const instaDirectUrl = "https://ig.me/m/n_nutriition";
       </div>
     </div>
 
-    <div class="bg-amber-500/5 border border-amber-500/10 p-3 rounded-xl mb-5 sm:mb-6 text-left">
+    <div class="bg-amber-500/5 border border-amber-500/10 p-3 rounded-xl text-left">
       <p class="text-[11px] text-amber-400/90 leading-relaxed">
         ⚠️ <strong class="text-zinc-200 font-bold">Важливо:</strong> Якщо ми не підписані взаємно,
         повідомлення може потрапити в папку <span class="font-bold underline">«Запити»</span>.
         Обов'язково загляньте туди!
       </p>
     </div>
-
-    <div class="mt-auto sm:mt-0">
-      <a
-        :href="instaDirectUrl"
-        target="_blank"
-        class="inline-flex items-center justify-center gap-2 w-full py-4 bg-emerald-500 text-zinc-950 font-black text-sm sm:text-base rounded-xl hover:bg-emerald-400 active:scale-[0.98] transition-all shadow-xl shadow-emerald-500/20 uppercase tracking-widest relative overflow-hidden group"
-      >
-        <span
-          class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shine"
-        ></span>
-
-        <span>Відкрити мій Директ</span>
-        <span class="text-base sm:text-lg">💬</span>
-      </a>
-    </div>
   </div>
 </template>
 
 <style scoped>
-/* Анімація відблиску на кнопці для єдиного стилю з барабаном */
-@keyframes shine {
-  100% {
-    transform: translateX(100%);
-  }
-}
-.group-hover\:animate-shine:hover {
-  animation: shine 0.8s ease-out;
-}
+/* Стилі очищено від колишньої анімації кнопки */
 </style>
+
+```
