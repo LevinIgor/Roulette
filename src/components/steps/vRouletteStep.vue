@@ -1,17 +1,9 @@
-Для того щоб реалізувати таку логіку, ми додамо нову реактивну змінну `isWheelVisible`. Спочатку
-користувач бачитиме лише заголовок та яскраву кнопку. Після кліку блок рулетки плавно та ефектно
-«випливе» знизу з легким ефектом пружини (spring/bounce), і одразу ж запуститься процес обертання з
-нашим плавним стартом та ефектом зупинки «на межі». Також код повністю очищено від зайвих дублювань
-класів, а логіку запуску розбито на два чітких кроки через мікротаймаут, щоб браузер встиг
-зарендерити початкову позицію барабана перед початком крутіння. Ось повністю оновлений та
-оптимізований файл компонента: ```vue
 <script setup>
 import { ref, computed } from "vue";
 
 const emits = defineEmits(["on-complete"]);
 
-// 🕹️ Керування станами
-const isWheelVisible = ref(false); // Барабан прихований за замовчуванням
+const isWheelVisible = ref(false);
 const isSpinning = ref(false);
 const showWinnerEffects = ref(false);
 
@@ -29,25 +21,20 @@ const basePrizes = [
   { id: "discount", text: "🔥 Знижка 20% на супровід" },
 ];
 
-const degreesPerItem = 360 / basePrizes.length; // 45 градусів на елемент
-const startingIndex = 3; // Стартова плашка для відводу очей ("Розрахунок КБЖВ")
+const degreesPerItem = 360 / basePrizes.length;
+const startingIndex = 3;
 
-// Початкова позиція барабана (у мінусі для коректного 3D відображення)
 const rotationX = ref(-(startingIndex * degreesPerItem));
 const cssDuration = computed(() => `${SPIN_DURATION / 1000}s`);
 
-// 🚀 Головна послідовність дій при натисканні
 const startSequence = () => {
   if (isSpinning.value || showWinnerEffects.value) return;
 
-  // Якщо барабан ще не з'явився — показуємо його
   if (!isWheelVisible.value) {
     isWheelVisible.value = true;
-
-    // Даємо Vue 200мс на відрисовку карти у стартовій позиції, і тільки потім крутимо
     setTimeout(() => {
       executeSpin();
-    }, 200);
+    }, 550);
   } else {
     executeSpin();
   }
@@ -58,7 +45,6 @@ const executeSpin = () => {
   showWinnerEffects.value = false;
 
   const mainPrizeIndex = basePrizes.findIndex((p) => p.id === "consult");
-
   const targetDegrees = 360 * SPIN_LOOPS + mainPrizeIndex * degreesPerItem;
   rotationX.value = -targetDegrees;
 
@@ -66,7 +52,6 @@ const executeSpin = () => {
     isSpinning.value = false;
     showWinnerEffects.value = true;
 
-    // Даємо насолодитися перемоговею та ефектами
     await new Promise((resolve) => setTimeout(resolve, 1800));
     emits("on-complete");
   }, SPIN_DURATION);
@@ -77,7 +62,6 @@ const executeSpin = () => {
   <div
     class="flex flex-col items-center p-5 text-center select-none relative w-full max-w-md mx-auto min-h-screen justify-center"
   >
-    <!-- 1. Блок заголовка -->
     <div class="transition-all duration-500" :class="{ 'scale-95 opacity-30': isSpinning }">
       <h1
         class="text-4xl font-black text-zinc-50 mb-2 tracking-tight bg-gradient-to-b from-zinc-50 to-zinc-400 bg-clip-text text-transparent"
@@ -87,18 +71,19 @@ const executeSpin = () => {
       <p class="text-zinc-400 text-sm mb-8">Крути колесо та вигравай цінний подарунок</p>
     </div>
 
-    <!-- 2. Блок рулетки (Рендериться і з'являється тільки після кліку) -->
-    <Transition name="wheel-bounce">
+    <Transition name="wheel-bounce" mode="out-in">
       <div
         v-if="isWheelVisible"
-        :class="
+        key="wheel"
+        @click="startSequence"
+        :class="[
           showWinnerEffects
             ? 'border-emerald-400 shadow-[0_0_60px_rgba(16,185,129,0.35)] scale-[1.03]'
-            : 'border-zinc-800 shadow-zinc-950/90'
-        "
+            : 'border-zinc-800 shadow-zinc-950/90',
+          isSpinning || showWinnerEffects ? 'cursor-not-allowed' : 'cursor-pointer',
+        ]"
         class="relative w-full max-w-85 bg-zinc-900 border p-4 rounded-3xl shadow-2xl transition-all duration-700 ease-out z-10 mb-8"
       >
-        <!-- Ефекти конфеті -->
         <div v-if="showWinnerEffects" class="absolute inset-0 pointer-events-none z-30">
           <span class="absolute top-0 left-0 text-4xl animate-pop-1">🎉</span>
           <span class="absolute top-0 right-0 text-4xl animate-pop-2">✨</span>
@@ -106,7 +91,6 @@ const executeSpin = () => {
           <span class="absolute bottom-0 right-0 text-4xl animate-pop-4">🌟</span>
         </div>
 
-        <!-- Бокові маркер-стрілки -->
         <div
           :class="
             showWinnerEffects ? 'text-emerald-400 scale-130' : 'text-emerald-500 animate-pulse'
@@ -124,7 +108,6 @@ const executeSpin = () => {
           ◀
         </div>
 
-        <!-- В'юпорт вікна відображення -->
         <div
           :class="
             showWinnerEffects
@@ -144,7 +127,6 @@ const executeSpin = () => {
             :class="{ 'border-emerald-500/40 bg-emerald-950/40': showWinnerEffects }"
           ></div>
 
-          <!-- 3D Барабан -->
           <div
             class="wheel-3d will-change-transform"
             :style="{
@@ -172,9 +154,31 @@ const executeSpin = () => {
           </div>
         </div>
       </div>
+
+      <div
+        v-else
+        key="placeholder"
+        @click="startSequence"
+        class="relative w-full max-w-85 bg-zinc-900/40 border border-zinc-800/60 p-4 rounded-3xl shadow-2xl z-10 mb-8 h-[234px] flex flex-col items-center justify-center overflow-hidden group/card backdrop-blur-sm cursor-pointer active:scale-[0.98] transition-all duration-300"
+      >
+        <div
+          class="absolute inset-0 bg-gradient-to-tr from-emerald-500/5 via-transparent to-zinc-500/5 animate-pulse"
+        ></div>
+        <div
+          class="relative flex items-center justify-center w-24 h-24 rounded-full bg-zinc-950 border border-zinc-850 shadow-inner group-hover/card:border-emerald-500/30 transition-colors duration-500"
+        >
+          <span class="text-5xl animate-bounce select-none">🎁</span>
+          <div
+            class="absolute inset-0 rounded-full bg-emerald-500/10 blur-xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-700"
+          ></div>
+        </div>
+        <span
+          class="text-[10px] font-bold text-zinc-500 tracking-widest uppercase mt-5 animate-pulse"
+          >Подарунок чекає на тебе</span
+        >
+      </div>
     </Transition>
 
-    <!-- 3. Кнопка взаємодії -->
     <button
       @click="startSequence"
       :disabled="isSpinning || showWinnerEffects"
@@ -191,20 +195,23 @@ const executeSpin = () => {
 </template>
 
 <style scoped>
-/* ✨ АНІМАЦІЯ ПЛАВНОЇ ПОЯВИ БЛОКУ РУЛЕТКИ */
 .wheel-bounce-enter-active {
-  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); /* М'який ефект пружини */
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .wheel-bounce-leave-active {
-  transition: all 0.25s ease-in;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .wheel-bounce-enter-from {
   opacity: 0;
-  transform: scale(0.92) translateY(30px);
-  filter: blur(5px);
+  transform: scale(0.92) translateY(20px);
+  filter: blur(4px);
+}
+.wheel-bounce-leave-to {
+  opacity: 0;
+  transform: scale(0.95) translateY(-10px);
+  filter: blur(4px);
 }
 
-/* 3D Перспектива */
 .viewport-3d {
   perspective: 1200px;
   transform-style: preserve-3d;
@@ -239,7 +246,6 @@ const executeSpin = () => {
   animation: shine 0.8s ease-out;
 }
 
-/* Вибухи конфеті */
 @keyframes popLT {
   0% {
     transform: translate(0, 0) scale(0);
