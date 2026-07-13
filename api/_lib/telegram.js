@@ -51,7 +51,7 @@ export async function processTelegramCallback(chatId, messageId, callbackQueryId
         {
           user: instaUrl,
           status: "Дзвінок призначено",
-          source: "Квіз рулетка",
+          source: "Шорти",
         },
       ]);
 
@@ -76,6 +76,8 @@ export async function processTelegramCallback(chatId, messageId, callbackQueryId
 
 // --- 2. ВІДПРАВКА КАРТКИ ЛІДА В ГРУПУ ---
 export async function sendTelegramNotification(userId, isSolvent, answers, username) {
+  if (!isSolvent) return;
+
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
 
